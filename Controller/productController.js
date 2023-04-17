@@ -1,5 +1,6 @@
 const catchAsyncError = require("../middleware/catchAsyncError");
 const Product = require("../models/productModel");
+const ApiFeatures = require("../utils/apiFeatures");
 const ErrorHander = require("../utils/errorHander");
 
 const dotenv = require("dotenv");
@@ -15,7 +16,7 @@ exports.addProduct = catchAsyncError(async (req, res, next) => {
   req.body.createdAt = new Date().toLocaleString(undefined, {
     timeZone: "Asia/Kolkata",
   });
-  req.body.updateAt = new Date().toLocaleString(undefined, {
+  req.body.updatedAt = new Date().toLocaleString(undefined, {
     timeZone: "Asia/Kolkata",
   });
   await Product.create(req.body)
@@ -32,7 +33,8 @@ exports.addProduct = catchAsyncError(async (req, res, next) => {
 
 exports.updateProduct = catchAsyncError(async (req, res, next) => {
   const { id } = req.params;
-  const notes = await Product.find({ _id: id, user: req.user.id });
+  const notes = await Product.findOne({ _id: id, user: req.user.id });
+  console.log(notes)
   if (!notes)
     return next(
       new ErrorHander(
@@ -40,7 +42,7 @@ exports.updateProduct = catchAsyncError(async (req, res, next) => {
         400
       )
     );
-    req.body.updateAt = new Date().toLocaleString(undefined, {
+    req.body.updatedAt = new Date().toLocaleString(undefined, {
       timeZone: "Asia/Kolkata",
     });
   await Product.findByIdAndUpdate(req.params.id, req.body, {
@@ -60,7 +62,7 @@ exports.updateProduct = catchAsyncError(async (req, res, next) => {
 
 exports.deleteProduct = catchAsyncError(async (req, res, next) => {
   const { id } = req.params;
-  const notes = await Product.find({ _id: id, user: req.user.id });
+  const notes = await Product.findOne({ _id: id, user: req.user.id });
   if (!notes)
     return next(
       new ErrorHander(
@@ -79,10 +81,21 @@ exports.deleteProduct = catchAsyncError(async (req, res, next) => {
 });
 
 exports.getAllProduct = catchAsyncError(async (req, res, next) => {
-  const product = await Product.find({user:req.user.id});
+  const ApiFeature = new ApiFeatures(Product.find({user:req.user.id}), req.query)
+  .filter()
+ const product =  await ApiFeature.query;
   res.status(200).json({
     success: true,
     notes: product,
   });
 });
 
+exports.getSingleNote = catchAsyncError(async(req,res,next)=>{
+  const {id} = req.params;
+  const note= await Product.findById(id);
+  res.status(200).json({
+    success: true,
+    note: note,
+  });
+  
+})
