@@ -3,6 +3,23 @@ class ApiFeatures{
         this.query=query;
         this.quertStr=quertStr;
     }
+    search(){
+        console.log(this.quertStr)
+        const keyword=this.quertStr.keyword ?
+         {
+            name:{
+                $regex:this.quertStr.keyword,
+                $options:"i",
+            },
+
+        }
+        :{};
+         console.log(keyword);
+        this.query=this.query.find({...keyword});
+    
+        return this;
+
+    }
     filter(){
         const queryCopy= {...this.quertStr};
         //removing the foelds from the params
@@ -13,7 +30,7 @@ class ApiFeatures{
        
         let querystr=JSON.stringify(queryCopy);
         querystr=querystr.replace(/\b(gt|gte|lt|lte)\b/g,key => `$${key}`);
-        
+      
         this.query=this.query.find(JSON.parse(querystr));
         return this;
     }

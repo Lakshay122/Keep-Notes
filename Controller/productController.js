@@ -80,16 +80,34 @@ exports.deleteProduct = catchAsyncError(async (req, res, next) => {
   });
 });
 
-exports.getAllProduct = catchAsyncError(async (req, res, next) => {
-  const ApiFeature = new ApiFeatures(Product.find({user:req.user.id}), req.query)
-  .filter()
- const product =  await ApiFeature.query;
+exports.getAllProductWithSearch = catchAsyncError(async (req, res, next) => {
+//   const ApiFeature = new ApiFeatures(Product.find({user:req.user.id}), req.query).search()
+//   .filter();
+//  const product =  await ApiFeature.query;
+// const searchQuery = req.query
+// console.log(searchQuery)
+ const product = await Product.find({$or: [
+  { title: { $regex: req.params.key, $options: 'i' } },
+  { description: { $regex: req.params.key, $options: 'i' } }
+],user:req.user.id
+})
   res.status(200).json({
     success: true,
     notes: product,
   });
 });
-
+exports.getAllProduct = catchAsyncError(async (req, res, next) => {
+  //   const ApiFeature = new ApiFeatures(Product.find({user:req.user.id}), req.query).search()
+  //   .filter();
+  //  const product =  await ApiFeature.query;
+  // const searchQuery = req.query
+  // console.log(searchQuery)
+   const product = await Product.find({user:req.user.id})
+    res.status(200).json({
+      success: true,
+      notes: product,
+    });
+  });
 exports.getSingleNote = catchAsyncError(async(req,res,next)=>{
   const {id} = req.params;
   const note= await Product.findById(id);
