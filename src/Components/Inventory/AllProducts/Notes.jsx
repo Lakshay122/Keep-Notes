@@ -172,7 +172,7 @@ console.log(config)
 
   const handleShareLink = (note) => {
     // Generate share link for note here
-    const link = `http://example.com/note/${note._id}`;
+    const link = `https://superb-selkie-bf2228.netlify.app/note/${note._id}`;
     setShareLink(link);
     setOpenShareDilogue(true);
   };
