@@ -9,5 +9,5 @@ router.route("/update-note/:id").put(isAuthenticated,updateProduct);
 router.route("/delete-note/:id").delete(isAuthenticated,deleteProduct);
 router.route("/get-notes/:key").get(isAuthenticated,getAllProductWithSearch);
 router.route("/get-notes").get(isAuthenticated,getAllProduct);
-router.route("/get-single-note/:id").get(isAuthenticated,getSingleNote)
+router.route("/get-single-note/:id").get(getSingleNote)
 module.exports  = router
